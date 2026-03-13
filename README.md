@@ -1,66 +1,139 @@
-## Foundry
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+# Piezo Prototype
+ 
+Prototype smart contract system for a **trust-minimized trading challenge**.
+ 
+The goal is to remove discretionary payout decisions from prop-style trading challenges by enforcing the rules directly in a smart contract.
+ 
+---
+ 
+## Status
+ 
+- Smart contract implemented
+- Full Foundry test suite passing
+- Local simulation running on Anvil
+- Next step: testnet deployment and live user testing
+ 
+This repository is an early **mechanism prototype**, not the final production system.
+ 
+---
+ 
+## The Idea
+ 
+Prop trading challenge platforms operate with discretionary payout decisions. Traders may complete the challenge rules but still depend on the platform to approve withdrawals. In practice this happens frequently and is a major pain point.
+ 
+This prototype explores a model where:
+ 
+1. A trader pays a fee in USDC.
+2. The contract records the trader's starting balance.
+3. The trader must reach a deterministic target before expiration.
+4. If the target is reached, the reward payout executes automatically.
+ 
+The contract therefore acts as the rule enforcement layer.
+ 
+---
+ 
+## Mechanism
+ 
+High-level flow:
+ 
+1. Trader pays entry fee.
+2. Contract records **starting balance after fee**.
+3. Trader must reach **target balance** before expiration.
+4. If conditions are met, reward is paid automatically from the reward pool.
+ 
+Example:
+Entry fee:        10 USDC Balance after fee: 10 USDC Target:           20 USDC Reward:           50 USDC
 
-Foundry consists of:
+ 
+If the trader's balance reaches the target before expiration, the reward is paid automatically by the contract.
+ 
+---
+ 
+## Contracts
+src/MultiSlotChallenge.sol
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+ 
+Core contract implementing the trading challenge logic.
 
-## Documentation
+src/MockUSDC.sol
 
-https://book.getfoundry.sh/
+ 
+Mock token used for local testing.
+ 
+---
+ 
+## Tests
+test/MultiSlotChallenge.t.sol
 
-## Usage
+ 
+End-to-end test suite covering:
+ 
+- challenge creation
+- fee handling
+- escrow reserve requirements
+- successful payout
+- expiry conditions
+- edge cases
+ 
+---
+ 
+## Run Tests
+ 
+Requires **Foundry**.
+ 
+Install Foundry:
+curl -L https://foundry.paradigm.xyz | bash foundryup
 
-### Build
+ 
+Run the test suite:
+forge test -vv
 
-```shell
-$ forge build
-```
+ 
+All tests should pass.
+ 
+---
+ 
+## Local Simulation
+ 
+Local testing uses **Anvil**.
+ 
+Start Anvil:
+anvil
 
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+ 
+The test suite deploys contracts and simulates challenge scenarios automatically.
+ 
+---
+ 
+## Next Steps
+ 
+Planned development:
+ 
+- deployment script
+- testnet deployment
+- small live user test
+- frontend or interaction guide
+- reward pool management improvements
+- oracle integration for external trading platforms
+ 
+---
+ 
+## Limitations (Prototype)
+ 
+This repository focuses only on the **core mechanism**.
+ 
+It does not yet include:
+ 
+- production security review
+- UI / frontend
+- oracle integration
+- production token support
+- full trading platform integration
+ 
+---
+ 
+ 
+## License
+ 
+MIT
