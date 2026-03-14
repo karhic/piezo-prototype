@@ -105,6 +105,24 @@ anvil
 The test suite deploys contracts and simulates challenge scenarios automatically.
  
 ---
+
+## Deployment
+
+With Anvil running:
+
+forge script script/Deploy.s.sol:Deploy --rpc-url http://127.0.0.1:8545 --broadcast
+
+This deploys:
+-MockUSDC
+-MultiSlotChallenge
+
+The script prints the deployed addresses.
+
+Export them for later interaction:
+
+export MOCK_USDC=0x....
+export CHALLENGE=0x.....
+
  
 ## Next Steps
  
