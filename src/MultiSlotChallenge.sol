@@ -449,7 +449,42 @@ contract MultiSlotChallenge {
         emit ChallengeEnded(challengeId, oldPlayer, false, 0, "expired");
     }
  
- 
+    /*
+        Anyone can finalize a failed challenge early.
+     
+        Failure condition:
+        Trader's USDC balance falls below their starting balance
+        after paying the entry fee.
+     
+        This releases the reserved reward back into the pool
+        so another challenge can start immediately.
+    */
+    function finalizeIfFailed(uint256 challengeId) external {
+     
+        Challenge storage c = challenges[challengeId];
+     
+        require(c.active, "no active challenge");
+     
+        require(!isExpired(challengeId), "challenge expired");
+     
+        uint256 currentBalance = usdc.balanceOf(c.player);
+     
+        require(
+            currentBalance < c.startBalanceAfterFee,
+            "challenge not failed"
+        );
+     
+        address oldPlayer = c.player;
+     
+        uint256 r = c.rewardSnap;
+     
+        _resetChallenge(c);
+     
+        activeRewardReserved -= r;
+     
+        emit ChallengeEnded(challengeId, oldPlayer, false, 0, "failed");
+    }
+     
     /*
         Trader claims reward if pass target reached.
     */

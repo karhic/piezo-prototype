@@ -321,4 +321,65 @@ contract MultiSlotChallengeTest is Test {
         assertEq(challenge.activeRewardReserved(), 100_000_000);
         assertEq(challenge.availableRewardPool(), 400_000_000);
     }
+
+    function testFinalizeIfFailed() public {
+     
+	_mintToUser(owner, 500_000_000);
+        // Fund reward pool
+        vm.startPrank(owner);
+        usdc.approve(address(challenge), 500_000_000);
+        challenge.topUpRewards(500_000_000);
+        vm.stopPrank();
+     
+        // Whitelist user
+        vm.prank(owner);
+        challenge.setAllowed(user, true);
+     
+        // Give trader USDC
+        _mintToUser(user, 100_000_000);
+     
+        // Approve fee
+        vm.prank(user);
+        usdc.approve(address(challenge), 10_000_000);
+     
+        // Start challenge
+        vm.prank(user);
+        uint256 id = challenge.startChallenge();
+     
+        // Verify reward reserved
+        assertEq(challenge.activeRewardReserved(), 50_000_000);
+     
+        // Trader loses $5
+        vm.prank(user);
+        usdc.transfer(user2, 5_000_000);
+     
+        // Finalize failure
+        challenge.finalizeIfFailed(id);
+     
+        // Reserved reward released
+        assertEq(challenge.activeRewardReserved(), 0);
+     
+        // Challenge inactive
+        (
+            address player,
+            ,
+            ,
+            bool active,
+            ,
+     
+        ) = challenge.challenges(id);
+     
+        assertEq(player, address(0));
+        assertFalse(active);
+     
+        // Trader can start another challenge
+        _mintToUser(user, 20_000_000);
+     
+        vm.prank(user);
+        usdc.approve(address(challenge), 10_000_000);
+     
+        vm.prank(user);
+        challenge.startChallenge();
+    }
+
 }
