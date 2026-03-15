@@ -12,7 +12,7 @@ The goal is to remove discretionary payout decisions from prop-style trading cha
 - Smart contract implemented
 - Full Foundry test suite passing
 - Local simulation running on Anvil
-- Next step: testnet deployment and live user testing
+- Contract depolyed on testnet : https://sepolia.arbiscan.io/address/0x66f4bAeda936548126A1BA330b03Aa9e9F2B287a
  
 This repository is an early **mechanism prototype**, not the final production system.
  
@@ -128,8 +128,7 @@ export CHALLENGE=0x.....
  
 Planned development:
  
-- deployment script
-- testnet deployment
+- tests on testnet
 - small live user test
 - frontend or interaction guide
 - reward pool management improvements
