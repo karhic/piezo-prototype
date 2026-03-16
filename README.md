@@ -13,6 +13,7 @@ The goal is to remove discretionary payout decisions from prop-style trading cha
 - Full Foundry test suite passing
 - Local simulation running on Anvil
 - Contract depolyed on testnet : https://sepolia.arbiscan.io/address/0x66f4bAeda936548126A1BA330b03Aa9e9F2B287a
+- Happy path tested on testnet
  
 This repository is an early **mechanism prototype**, not the final production system.
  
